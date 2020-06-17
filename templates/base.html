@@ -1,0 +1,179 @@
+{% load staticfiles %}
+{% load static %}
+
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Jekyll v3.8.5">
+    <title>学协体侧管理系统</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href='{% static "css/bootstrap.css" %}' rel="stylesheet">
+
+
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href='{% static "css/dashboard.css" %}' type='text/css'>
+  </head>
+
+  <script src='{% static "js/echarts.js" %}'></script>
+
+    <script type="text/javascript">
+        // 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.getElementById('main'));
+
+        // 指定图表的配置项和数据
+        var option = {
+    title: {
+        text: '基础雷达图'
+    },
+    tooltip: {},
+    legend: {
+        data: ['预算分配（Allocated Budget）', '实际开销（Actual Spending）']
+    },
+    radar: {
+        // shape: 'circle',
+        name: {
+            textStyle: {
+                color: '#fff',
+                backgroundColor: '#999',
+                borderRadius: 3,
+                padding: [3, 5]
+            }
+        },
+        indicator: [
+            { name: 'BMI', max: 6500},
+            { name: '柔韧', max: 16000},
+            { name: '协调', max: 30000},
+            { name: '原地摸高', max: 38000},
+            { name: '速度', max: 52000},
+        ]
+    },
+    series: [{
+        name: '标准 vs 实际',
+        type: 'radar',
+        // areaStyle: {normal: {}},
+        data: [
+            {
+                value: [4300, 10000, 28000, 35000, 50000],
+                name: '预算分配（Allocated Budget）'
+            },
+            {
+                value: [5000, 14000, 28000, 31000, 42000],
+                name: '实际开销（Actual Spending）'
+            }
+        ]
+    }]
+};
+
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
+    </script>
+
+  <body>
+<div class="pos-f-t">
+  <div class="collapse" id="navbarToggleExternalContent">
+    <div class="bg-dark p-4">
+    <nav class="navbar-nav mr-auto mt-2 mt-lg-0 ">
+        <ul class="nav">
+         <li class="nav-item"><a class="nav-link" href="{% url 'index' %}"><span data-feather="file"></span>主页</a></li>
+
+        {% for category in allcategory %}
+         <li class="nav-item">
+         <a class="nav-link" href="{% url 'index' %}list-{{ category.id }}.html"><span data-feather="file"></span>{{ category.name }}</a>
+         </li>
+        {% endfor %}
+         <li class="nav-item">
+         <a class="nav-link" href="{% url 'admin:index' %}"><span data-feather="file"></span>登陆后台</a>
+         </li>
+        </ul>
+    </nav>
+    </div>
+  </div>
+  <nav class="navbar navbar-dark " style="background-color: #008B45 ;">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span><span><h3 class="text-white">佛山学协体育儿童体质健康测评报告</h3></span>
+    </button>
+       <ul class="nav flex-column justify-content-end ">
+        <li class="nav-item active">
+          <h5 class="text-white">姓名： <span>变量1</span></h5>
+        </li>
+        <li class="nav-item">
+          <h5 class="text-white">性别： <span>变量2</span></h5>
+        </li>
+      </ul>
+       <ul class="nav flex-column justify-content-end">
+        <li class="nav-item active">
+          <h5 class="text-white">年龄： <span>变量3</span></h5>
+        </li>
+        <li class="nav-item">
+          <h5 class="text-white">日期： <span>变量1</span></h5>
+        </li>
+      </ul>
+  </nav>
+
+</div>
+
+<div class="container">
+  <!-- Stack the columns on mobile by making one full-width and the other half-width -->
+  <div class="row">
+      <div class="col-md-8"><h4><span class="badge badge-warning">体姿体态</span></h4>第一个变量是由身高体重计算得出，插入5个变量</div>
+  </div>
+      <div>
+        <table class="table table-striped table-sm table-bordered table-hover table-condensed">
+          <thead>
+            <tr>
+              <th>姓名</th>
+              <th>性别</th>
+              <th>图解</th>
+              <th>重点</th>
+              <th>预期</th>
+              <th>阶段</th>
+            </tr>
+          </thead>
+          <tbody>
+
+            {% for list in list %}
+
+            <tr>
+            <td>{{ list.name }}</td>
+            <td>{{ list.gender }}</td>
+            <td>{{ list.age }}</td>
+            <td>{{ list.time }}</td>
+            <td>{{ list.created_time }}</td>
+            <td>{{ list.user }}</td>
+            </tr>
+
+            {% endfor %}
+
+          </tbody>
+        </table>
+      </div>
+  <!-- Columns start at 50% wide on mobile and bump up to 33.3% wide on desktop -->
+  <div class="row">
+      <div class="col-6"><h4><span class="badge badge-warning">体质测评</span></h4></div>
+    <div class="col-6">
+
+<div id="main"  style="width: 400px;height:400px;"></div>
+
+    </div>
+  </div>
+
+  <!-- Columns are always 50% wide, on mobile and desktop -->
+  <div class="row">
+      <div class="col-6"><h4><span class="badge badge-warning">运动处方</span></h4></div>
+  </div>
+</div>
+
+
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+</body>
+</html>

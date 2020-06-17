@@ -1,0 +1,226 @@
+{% load staticfiles %}
+{% load static %}
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Jekyll v3.8.5">
+    <title>学协体侧管理系统</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href='{% static "css/bootstrap.css" %}' rel="stylesheet">
+
+    <script src={% static "js/echarts.js" %}></script>
+
+</head>
+
+<body>
+<!--
+<nav class="navbar-nav mr-auto mt-2 mt-lg-0 ">
+        <ul class="nav">
+         <li class="nav-item"><a class="nav-link" href="{% url 'index' %}"><span data-feather="file"></span>主页</a></li>
+         <li class="nav-item">
+         <a class="nav-link" href="{% url 'admin:index' %}"><span data-feather="file"></span>登陆后台</a>
+         </li>
+        </ul>
+</nav>
+-->
+<nav class="navbar navbar-dark " style="background-color: #008b88 ;">
+    <!--    <img src="/docs/assets/brand/bootstrap-solid.svg" alt="" width="72" height="72">-->
+    <span><h1 class="text-white">佛山学协体育儿童体质健康测评报告</h1></span>
+
+    <ul class="nav flex-column justify-content-end ">
+        <li class="nav-item active">
+            <h5 class="text-white">姓名： <span>{{ article.name }}</span></h5>
+        </li>
+        <li class="nav-item">
+            <h5 class="text-white">性别： <span>{{ article.gender }}</span></h5>
+        </li>
+    </ul>
+    <ul class="nav flex-column justify-content-end">
+        <li class="nav-item active">
+            <h5 class="text-white">年龄： <span>{{ article.age }}</span></h5>
+        </li>
+        <li class="nav-item">
+            <h5 class="text-white">日期： <span>{{ article.created_time|date:"Y m d" }}</span></h5>
+        </li>
+    </ul>
+</nav>
+
+
+<div>
+    <div class="col-md-8 "><h4><span class="badge badge-pill badge-danger">体姿体态</span></h4></div>
+</div>
+<div>
+    <table class="table table-striped table-sm table-bordered table-hover table-condensed">
+        <thead style="background-color: #02838b ;">
+        <tr>
+            <th><h6 class="text-white">身高(cm)</h6></th>
+            <th><h6 class="text-white">体重(kg)</h6></th>
+            <th><h6 class="text-white">腰围(cm)</h6></th>
+            <th><h6 class="text-white">脊柱侧弯</h6></th>
+            <th><h6 class="text-white">腿型</h6></th>
+            <th><h6 class="text-white">身体平衡(秒)</h6></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>{{ article.height }}</td>
+            <td>{{ article.weight }}</td>
+            <td>{{ article.waist }}</td>
+            <td>{{ article.spine }}</td>
+            <td>{{ article.leg }}</td>
+            <td>{{ article.balance }}</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<div>
+    <div class="col-md-8"><h4><span class="badge badge-pill badge-danger">体质测评</span></h4></div>
+</div>
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-2 align-self-center ">
+
+            <dl>
+                <dt><h4><span class="badge badge-info">体脂(%) / BMI</span></h4></dt>
+                <dd class="font-weight-bold">{{ article.fat }}% / {{ article.bmi }}</dd>
+                <dt><h4><span class="badge badge-info">柔韧(cm)</span></h4></dt>
+                <dd class="font-weight-bold">{{ article.flexibility }}</dd>
+                <dt><h4><span class="badge badge-info">协调(秒)</span></h4></dt>
+                <dd class="font-weight-bold">{{ article.coordinate }}</dd>
+            </dl>
+
+        </div>
+        <div class="col-md-3 align-self-center ">
+
+            <dl class="small">
+                <dd>体脂(%) / BMI：</dd>
+                <dd>(参考：体脂正常15%～18%，BMI正常范围13.5～17.2)</dd>
+                <dd>柔韧(cm)：</dd>
+                <dd>(参考：0～11及格，11～13良好，超过13优秀)</dd>
+                <dd>协调(秒)：</dd>
+                <dd>(参考：10以内及格，10～20良好，超过20优秀)</dd>
+            </dl>
+
+        </div>
+
+        <div class="col-md-7 align-self-center" id="main" style="width: 300px;height:300px;">
+        </div>
+
+    </div>
+</div>
+<script type="text/javascript">
+    // 基于准备好的dom，初始化echarts实例
+
+
+    // 指定图表的配置项和数据
+    var dom = document.getElementById("main");
+    var myChart = echarts.init(dom);
+    var app = {};
+    option = null;
+    option = {
+        title: {
+            text: '基础雷达图'
+        },
+        tooltip: {},
+        legend: {
+            data: ['标准', '实际']
+        },
+        radar: {
+            // shape: 'circle',
+            name: {
+                textStyle: {
+                    color: '#fff',
+                    backgroundColor: '#02838b',
+                    borderRadius: 3,
+                    padding: [3, 5]
+                }
+            },
+            indicator: [
+                {name: 'BMI', max: 20},
+                {name: '柔韧', max: 20},
+                {name: '协调', max: 20},
+            ]
+        },
+        series: [{
+            name: '标准 vs 实际',
+            type: 'radar',
+            // areaStyle: {normal: {}},
+            data: [
+                {
+                    value:{{ newlist|safe }},
+                    name: '实际'
+                },
+                {
+                    value: [10, 10, 10],
+                    name: '标准'
+                }
+            ]
+        }]
+    };
+    if (option && typeof option === "object") {
+        myChart.setOption(option, true);
+    }
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option);
+</script>
+
+
+<div>
+    <div class="col-md-8"><h4><span class="badge badge-pill badge-danger">运动处方</span></h4></div>
+</div>
+<table class="table table-striped table-sm table-bordered table-hover table-condensed">
+    <tbody>
+    <tr>
+        <td>
+            {% if article.age < 10 %}
+                该生未满10岁，BMI正常。
+            {% elif article.bmi >= 13.5 and article.bmi <= 17.2 %}
+                BMI正常
+            {% else %}
+                该学员BMI指数超过年龄正常水平,平时需生多吃膳食纤维及富含营养但是低热量的食品。多进行有益健康的运动，如慢跑。
+            {% endif %}</td>
+    </tr>
+    <tr>
+        <td>
+            {% if article.flexibility >= 13 %}
+                柔韧性优秀
+            {% elif article.flexibility < 13 and article.flexibility >= 11 %}
+                该学员柔韧性处于该年龄段一般水平,每周进行1-2次柔韧性练习，例如直腿拉伸。
+            {% else %}
+                该学员柔韧性低于该年龄段平均水平,每周进行3次以上柔韧性练习（直腿拉伸）。
+            {% endif %}
+        </td>
+
+    </tr>
+    <tr>
+        <td>{% if article.coordinate >= 20 %}
+            协调性优秀
+        {% elif article.coordinate < 20 and article.coordinate >= 10 %}
+            该学员协调能力处于该年龄段一般水平,每周进行1-2次协调性练习（跳格子游戏），每次进行10~20分钟。
+        {% else %}
+            该学员协调能力低于该年龄段平均水平,每周进行3次以上协调性练习（跳格子游戏），每次进行10~20分钟。
+        {% endif %}
+        </td>
+    </tr>
+    <tr>
+        <td>{% if article.balance >= 20 %}
+            平衡性优秀
+        {% elif article.balance < 20 and article.balance >= 10 %}
+            该学员平衡能力处于该年龄段一般水平,每周进行1-2次平衡性练习。（4步原地转一圈，转20秒，停下来，闭眼静立半分钟。然后反向练习）
+        {% else %}
+            该学员平衡能力低于该年龄段平均水平,每周进行3次以上平衡性练习。（4步原地转一圈，转20秒，停下来，闭眼静立半分钟。然后反向练习）
+        {% endif %}
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>

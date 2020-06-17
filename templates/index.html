@@ -1,0 +1,9 @@
+﻿
+
+
+
+        {% for article in allarticle  %}
+            <li><a href="{% url 'detail' article.id %}">{{ article.name }}</a></li>
+        {% endfor %}
+
+
